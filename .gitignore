@@ -1,0 +1,9 @@
+# vim
+*.swp
+
+# virenv
+py3/
+
+# credential
+gmail-alert/credentials.json
+gmail-alert/token.pickle
