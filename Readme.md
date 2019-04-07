@@ -23,4 +23,4 @@ Command | Description
 /start  | Show welcome message
 /latest | Get the latest email's literatures
 /all    | Get all the literatures
-/get <number> | Get the given number emails' literatures
+/get \<number\> | Get the given number emails' literatures
