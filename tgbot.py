@@ -104,7 +104,7 @@ def get(bot, update, args):
         tgMsg = []
         tgMsg = gmail.getGmailMsg(msg_no)
         
-        for message in tgMsg[0:n]:
+        for message in tgMsg:
             for info in message.msg:
                 update.message.reply_text(
                         text = info, 
