@@ -24,7 +24,7 @@ from telegram.ext import (Updater, CommandHandler, MessageHandler, Filters, Rege
                           ConversationHandler)
 import configparser
 import sys
-sys.path.insert(0,'../gmail-alert/')
+sys.path.insert(0,'./gmail-alert/')
 import gmail
 
 # Enable logging
@@ -98,7 +98,6 @@ def get(bot, update, args):
                     'Invalid given number: {}'.format(args[0])+'\n'
                     'Usage: /get <number>\n'
                     '<number> should be in 2~5.'
-
                     )
             return
     
