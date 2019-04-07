@@ -19,8 +19,8 @@ pip3 install requirements.txt
 ```
 ## Config.ini  
 Change token info to your own Telegram bot's token.  
-If you are using proxy to connect Telegram, change it to your own. 
-Also, change the label name to your own Gmail label name which is used to filter Google Scholar Alert emails.  
+If you are using proxy to connect Telegram, change it to your own.   
+Also,you need create a `label` in `Gmail` to filter the `Google Scholar Alert` emails. Once you have done that, change the label name to your own.
 ```
 [token_info]
 token = 123456789:ABCDEFGH_ijklmnopqrstuvwxyzabcdefgh
