@@ -7,6 +7,7 @@ from google_auth_oauthlib.flow import InstalledAppFlow
 from google.auth.transport.requests import Request
 from apiclient import errors, discovery
 import base64
+import configparser
 from bs4 import BeautifulSoup
 
 # If modifying these scopes, delete the file token.pickle.
@@ -50,8 +51,8 @@ def getGmailMsg(n_msgs):
     # The file token.pickle stores the user's access and refresh tokens, and is
     # created automatically when the authorization flow completes for the first
     # time.
-    token_file = '../gmail-alert/token.pickle'
-    cred_file  = '../gmail-alert/credentials.json'
+    token_file = './gmail-alert/token.pickle'
+    cred_file  = './gmail-alert/credentials.json'
     if os.path.exists(token_file):
         with open(token_file, 'rb') as token:
             creds = pickle.load(token)
@@ -70,7 +71,7 @@ def getGmailMsg(n_msgs):
     service = build('gmail', 'v1', credentials=creds)
     
     # load readed thread id
-    id_file = '../gmail-alert/threadId.pickle'
+    id_file = './gmail-alert/threadId.pickle'
     if os.path.exists(id_file):
         with open(id_file, 'rb') as f:
             readedThreads = pickle.load(f)
@@ -78,9 +79,7 @@ def getGmailMsg(n_msgs):
     else:
         readedThreads = []
 
-    label_liter = "LITER"
-
-    liter_id = getLableId(service, label_liter)
+    liter_id = getLabelId(service)
 
     tgMsg = []
 
@@ -119,12 +118,17 @@ def getGmailMsg(n_msgs):
 
     return tgMsg
 
-def getLableId(service, label_liter):
+def getLabelId(service):
     """
     return code: (string)
         100: Can't get Gmails labels
         200: Can't find the given label in the label list
     """
+    config = configparser.ConfigParser()
+    config.read('config.ini')
+
+    label_name = config['label_name']['label']
+
     results = service.users().labels().list(userId='me').execute()
     labels = results.get('labels',[])
 
@@ -133,7 +137,7 @@ def getLableId(service, label_liter):
     else:
         found_label = False
         for label in labels:
-            if (label['name'] == label_liter):
+            if (label['name'] == label_name):
                 found_label = True
                 return (label['id'])
         if (found_label == False):
