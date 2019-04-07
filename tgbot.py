@@ -103,14 +103,8 @@ def get(bot, update, args):
             return
     
         tgMsg = []
-        tgMsg = gmail.getGmailMsg(-1)
+        tgMsg = gmail.getGmailMsg(msg_no)
         
-        # if too many unreaded emails, only show the first 10
-        if len(tgMsg) > 10:
-            n = 10
-        else:
-            n = len(tgMsg)
-    
         for message in tgMsg[0:n]:
             for info in message.msg:
                 update.message.reply_text(
@@ -118,6 +112,7 @@ def get(bot, update, args):
                         parse_mode=tg.ParseMode.MARKDOWN
                         )   
         return ConversationHandler.END
+
     except(IndexError, ValueError):
         update.message.reply_text(
                 'Usage: /get <number>\n'
