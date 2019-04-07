@@ -32,9 +32,8 @@ logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s
                     level=logging.INFO)
 
 logger = logging.getLogger(__name__)
-print(__name__)
 
-GENDER, PHOTO, LOCATION, BIO = range(4)
+GETMSG, GETNUM = range(2)
 
 
 def start(bot, update):
@@ -42,7 +41,8 @@ def start(bot, update):
     Show welcome message
     """
     update.message.reply_text(
-        'Hi! My name is T-Gmail Scholar Alert Bot. Hope I can help you! ',
+        'Hello {}!'.format(update.message.from_user.first_name)+'\n'
+        'My name is T-Gmail Scholar Alert Bot. Hope I can help you! ',
         )
     
     return ConversationHandler.END
@@ -85,78 +85,54 @@ def all(bot, update):
                     )   
     return ConversationHandler.END
 
-def get(bot, update):
+def get(bot, update, args):
     """
     Get all the emails' literatures.
     It's A Disastah!! if you have too many unreaded Google Scholar Alert emails.
     Yeah, like a $6Million's EchoSlam right on your head.
     """
-    tgMsg = []
-    tgMsg = gmail.getGmailMsg(-1)
-    
-    # if too many unreaded emails, only show the first 10
-    if len(tgMsg) > 10:
-        n = 10
-    else:
-        n = len(tgMsg)
-
-    for message in tgMsg[0:n]:
-        for info in message.msg:
+    try:
+        msg_no = int(args[0])
+        if msg_no < 2 or msg_no > 5:
             update.message.reply_text(
-                    text = info, 
-                    parse_mode=tg.ParseMode.MARKDOWN
-                    )   
-    return ConversationHandler.END
+                    'Invalid given number: {}'.format(args[0])+'\n'
+                    'Usage: /get <number>\n'
+                    '<number> should be in 2~5.'
 
-def getNumber(bot, update):
-    update.message.reply_text( 'Now give me the number'
-                              'At last, tell me something about yourself.')
-
-def photo(bot, update):
-    user = update.message.from_user
-    photo_file = update.message.photo[-1].get_file()
-    photo_file.download('user_photo.jpg')
-    logger.info("Photo of %s: %s", user.first_name, 'user_photo.jpg')
-    update.message.reply_text('Gorgeous! Now, send me your location please, '
-                              'or send /skip if you don\'t want to.')
-
-    return LOCATION
-
-def location(bot, update):
-    user = update.message.from_user
-    user_location = update.message.location
-    logger.info("Location of %s: %f / %f", user.first_name, user_location.latitude,
-                user_location.longitude)
-    update.message.reply_text('Maybe I can visit you sometime! '
-                              'At last, tell me something about yourself.')
-
-    return BIO
-
-def cancel(bot, update):
-    user = update.message.from_user
-    logger.info("User %s canceled the conversation.", user.first_name)
-    update.message.reply_text('Bye! I hope we can talk again some day.',
-                              reply_markup=ReplyKeyboardRemove())
-
-    return ConversationHandler.END
-
+                    )
+            return
+    
+        tgMsg = []
+        tgMsg = gmail.getGmailMsg(-1)
+        
+        # if too many unreaded emails, only show the first 10
+        if len(tgMsg) > 10:
+            n = 10
+        else:
+            n = len(tgMsg)
+    
+        for message in tgMsg[0:n]:
+            for info in message.msg:
+                update.message.reply_text(
+                        text = info, 
+                        parse_mode=tg.ParseMode.MARKDOWN
+                        )   
+        return ConversationHandler.END
+    except(IndexError, ValueError):
+        update.message.reply_text(
+                'Usage: /get <number>\n'
+                '<number> should be in 2~5.'
+                )
 
 def error(bot, update):
     """Log Errors caused by Updates."""
     logger.warning('Update "%s" caused error "%s"', update, context.error)
-
-def hello(bot, update):
-    update.message.reply_text(
-        'Hello {}'.format(update.message.from_user.first_name))
 
 def main():
     # Create the Updater and pass it your bot's token.
     # Make sure to set use_context=True to use the new context based callbacks
     # Post version 12 this will no longer be necessary
     
-    #Token='738291811:AAFEXdlx_ggTY8Cy9rpdKadHhKFFOgeGTek'
-    #REQUEST_KWARGS = { 'proxy_url': 'socks5://127.0.0.1:1080/',} 
-
     config = configparser.ConfigParser()
     config.read('config.ini')
 
@@ -169,28 +145,12 @@ def main():
     # Get the dispatcher to register handlers
     dp = updater.dispatcher
 
-    # Add conversation handler with the states GENDER, PHOTO, LOCATION and BIO
-    conv_handler = ConversationHandler(
-        entry_points=[CommandHandler('start', start)],
-        #entry_points=[CommandHandler('hello', hello)],
-        #entry_points=[CommandHandler('check', check)],
+    # add command handlers
+    dp.add_handler(CommandHandler("start", start))
+    dp.add_handler(CommandHandler("latest", latest))
+    dp.add_handler(CommandHandler("all", all))
+    dp.add_handler(CommandHandler("get", get, pass_args=True))
 
-        states={
-            GENDER: [RegexHandler('^(Boy|Girl|Other)$', gender)],
-
-            PHOTO: [MessageHandler(Filters.photo, photo),
-                    CommandHandler('skip', skip_photo)],
-
-            LOCATION: [MessageHandler(Filters.location, location),
-                       CommandHandler('skip', skip_location)],
-
-            BIO: [MessageHandler(Filters.text, bio)]
-        },
-
-        fallbacks=[CommandHandler('cancel', cancel)]
-    )
-
-    dp.add_handler(conv_handler)
 
     # log all errors
     dp.add_error_handler(error)
