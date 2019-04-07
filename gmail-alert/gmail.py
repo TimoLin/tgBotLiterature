@@ -28,7 +28,7 @@ class Message:
         """
         header = '['+title+']' + '('+href+')' +'\n'
         header += '*'+author +'*'+'\n'
-        header += abstract 
+        header += abstract.replace('\n', ' ') 
         return(header)
     def msgHTMLWrapper(self, title, href, author, abstract):
         """
