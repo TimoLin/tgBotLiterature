@@ -13,6 +13,26 @@ It converts your Google Scholar Alert emails to Telegram messages: one literatur
 3. python3
 
 # How to run? 
+## Install  
+```shell
+pip3 install requirements.txt
+```
+## Config.ini  
+Change token info to your own Telegram bot's token.  
+If you are using proxy to connect Telegram, change it to your own. 
+Also, change the label name to your own Gmail label name which is used to filter Google Scholar Alert emails.  
+```
+[token_info]
+token = 123456789:ABCDEFGH_ijklmnopqrstuvwxyzabcdefgh
+
+[proxy_info]
+#proxy = socks5://127.0.0.1:1080/
+proxy = 
+
+[label_name]
+label = LITER
+```
+
 ## On a computer, a Raspberry Pi or a VPS  
 ```shell  
 python3 tgbot.py
@@ -24,3 +44,21 @@ Command | Description
 /latest | Get the latest email's literatures
 /all    | Get all the literatures
 /get \<number\> | Get the given number emails' literatures
+
+# Literature message  
+The message has been formatted using Markdown. Like follows:
+
+[Title]()  
+__Author1, Author2... - Journal of Sth, Year__  
+Abstract: blah blah  
+
+The title has a hyper link pointing the paper's website.  
+The authors, journal and year are bold.  
+The abstract is plain text.  
+
+Example message:  
+[A Computational Study on Laminar Flame Propagation in Mixtures with Non-Zero Reaction Progress](http://scholar.google.com/scholar_url?url=https://www.researchgate.net/profile/Peng_Zhao23/publication/331966184_Computational_Study_on_Laminar_Flame_Propagation_in_Mixtures_with_Non-Zero_Reaction_Progress/links/5c95957c299bf11169409dc4/Computational-Study-on-Laminar-Flame-Propagation-in-Mixtures-with-Non-Zero-Reaction-Progress.pdf&hl=en&sa=X&d=17953251988986958219&scisig=AAGBfm2VkBWAGKGHhcuWnP2Mnvew_e9aaw&nossl=1&oi=scholaralrt&hist=SL5peagAAAAJ:1186450557092380684:AAGBfm1triiJcRjc6dSTGpiDbjKZ23AzMw)  
+__H Lin, P Zhao, H Ge - SAE Technical Paper, 2019__  
+… turbulent premixed flames. Experimentally, laminar flame speed can be measured using different apparatus, including the coun- terflow twin flame, spherical combustion bomb, Bunsen flame, and flat flame, etc. 1, 2, 3, 4. A …  
+
+
