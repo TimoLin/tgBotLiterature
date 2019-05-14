@@ -13,7 +13,12 @@ It converts your Google Scholar Alert emails to Telegram messages: one literatur
 3. python3
 
 # How to run? 
-## Install  
+## Install
+### Prerequisites for Pi
+```shell
+sudo apt install gcc libffi-dev libssl-dev python3-dev
+```
+### Pip packages
 ```shell
 pip3 install requirements.txt
 ```
