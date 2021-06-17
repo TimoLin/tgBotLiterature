@@ -33,7 +33,7 @@ ptyprocess==0.6.0
 pyasn1==0.4.5
 pyasn1-modules==0.2.4
 pycparser==2.19
-Pygments==2.3.1
+Pygments==2.7.4
 pymars==0.1.0a0
 PySocks==1.6.8
 python-telegram-bot==11.1.0
