@@ -17,18 +17,20 @@ readedThreads = []
 
 class Message:
     def __init__(self, _titles, _hrefs, _authors, _abstracts, _keyword):
-        self.keyword = _keyword
         self.msg = []
         for n in range(len(_titles)):
-            self.msg.append( self.msgMDWrapper(_titles[n], _hrefs[n], _authors[n], _abstracts[n]))
+            self.msg.append( self.msgMDWrapper(_titles[n], _hrefs[n], _authors[n], _abstracts[n], _keyword))
 
-    def msgMDWrapper(self, title, href, author, abstract):
+    def msgMDWrapper(self, title, href, author, abstract, keyword):
         """
         Wrap the message to markdown format
         """
         header = '['+title+']' + '('+href+')' +'\n'
         header += '*'+author +'*'+'\n'
         header += abstract.replace('\n', ' ') 
+        keyword = keyword.replace(' - new results', '')
+        keyword = keyword.replace(' ','_')
+        header += '\n'+'#'+keyword
         return(header)
     def msgHTMLWrapper(self, title, href, author, abstract):
         """
